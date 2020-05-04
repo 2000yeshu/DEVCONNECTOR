@@ -1,4 +1,6 @@
 {
   "mongoURI": "mongodb+srv://yakul123:yakul123@devconnector-zhope.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtToken": "mysecrettoken"
+  "jwtToken": "mysecrettoken",
+  "githubClientId": "40c958764288015f9841",
+  "githubSecret": "2c995ba1f8c64955230be7658327a98f75e7046a"
 }
