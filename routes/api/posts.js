@@ -101,7 +101,7 @@ router.delete("/:post_id", auth, async (req, res) => {
   }
 });
 
-//@route PUT api/posts/like/:post_id
+//@route PUT api/posts
 //@desc  Like a post
 //@access Private
 router.put("/like/:post_id", auth, async (req, res) => {
@@ -127,9 +127,9 @@ router.put("/like/:post_id", auth, async (req, res) => {
 });
 
 //@route Delete api/posts/unlike/:post_id
-//@desc  Like a post
+//@desc  UnLike a post
 //@access Private
-router.delete("/unlike/:post_id", auth, async (req, res) => {
+router.put("/unlike/:post_id", auth, async (req, res) => {
   try {
     const post = await Posts.findById(req.params.post_id);
 

@@ -5,6 +5,8 @@ const config = require("config");
 const auth = require("../../middleware/auth");
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
+const Posts = require("../../models/Posts");
+
 const { check, validationResult } = require("express-validator");
 
 //@route GET api/profile/me
@@ -13,11 +15,10 @@ const { check, validationResult } = require("express-validator");
 router.get("/me", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.user.id,
+      user: req.user,
     }).populate("user", ["name", "avatar"]);
-    res.json(profile);
     if (!profile) {
-      res
+      return res
         .status(400)
         .json({ errors: [{ msg: "There is no profile for this user" }] });
     }
@@ -59,29 +60,29 @@ router.post(
       instagram,
       linkedin,
     } = req.body;
-
-    //Build profile object
-    profileFields = {};
-    profileFields.user = req.user;
-    if (company) profileFields.company = company;
-    if (website) profileFields.website = website;
-    if (location) profileFields.location = location;
-    if (bio) profileFields.bio = bio;
-    if (status) profileFields.status = status;
-    if (githubusername) profileFields.githubusername = githubusername;
-    if (skills) {
-      profileFields.skills = skills.split(",").map((abc) => abc.trim());
-    }
-
-    //Build profile social object
-    profileFields.social = {};
-    if (youtube) profileFields.social.youtube = youtube;
-    if (twitter) profileFields.social.twitter = twitter;
-    if (linkedin) profileFields.social.linkedin = linkedin;
-    if (facebook) profileFields.social.facebook = facebook;
-    if (instagram) profileFields.social.instagram = instagram;
-
     try {
+      //Build profile object
+      profileFields = {};
+      profileFields.user = req.user;
+      if (company) profileFields.company = company;
+      if (website) profileFields.website = website;
+      if (location) profileFields.location = location;
+      if (bio) profileFields.bio = bio;
+      if (status) profileFields.status = status;
+      if (githubusername) profileFields.githubusername = githubusername;
+      if (skills) {
+        const skillsConv = skills.toString();
+        profileFields.skills = skillsConv.split(",").map((abc) => abc.trim());
+      }
+
+      //Build profile social object
+      profileFields.social = {};
+      if (youtube) profileFields.social.youtube = youtube;
+      if (twitter) profileFields.social.twitter = twitter;
+      if (linkedin) profileFields.social.linkedin = linkedin;
+      if (facebook) profileFields.social.facebook = facebook;
+      if (instagram) profileFields.social.instagram = instagram;
+
       let user = await User.findById(req.user);
       if (!user) {
         return res.json("No such user exist!");
@@ -94,6 +95,7 @@ router.post(
           { $set: profileFields },
           { new: true }
         );
+        profile.save();
         return res.json(profile);
       }
 
@@ -153,11 +155,12 @@ router.get("/user/:user_id", async (req, res) => {
 router.delete("/", auth, async (req, res) => {
   try {
     //@todo delete posts
+    await Posts.deleteMany({ user: req.user.id });
     //delete profile
-    let profiles = await Profile.deleteOne({ user: req.user });
+    await Profile.deleteOne({ user: req.user });
 
     //delete user
-    let user = await User.deleteOne({ _id: req.user });
+    await User.deleteOne({ _id: req.user });
     res.json({ msg: "User deleted!" });
   } catch (error) {
     console.log(error.message);
@@ -223,6 +226,7 @@ router.delete("/experience/:exp_id", auth, async (req, res) => {
       .indexOf(req.params.exp_id);
 
     profile.experience.splice(removeIndex, 1);
+    profile.save();
     res.json(profile);
   } catch (error) {
     console.log(error.message);
@@ -278,7 +282,7 @@ router.put("/education", [
 ]);
 
 //@route Delete api/profile/education/:education_id
-//@desc Delete experience
+//@desc Delete education
 //@access Private
 router.delete("/education/:edu_id", auth, async (req, res) => {
   try {
@@ -289,6 +293,7 @@ router.delete("/education/:edu_id", auth, async (req, res) => {
       .indexOf(req.params.edu_id);
 
     profile.education.splice(removeIndex, 1);
+    profile.save();
     res.json(profile);
   } catch (error) {
     console.log(error.message);
