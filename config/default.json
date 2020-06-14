@@ -1,4 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://yakul123:yakul123@devconnector-zhope.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtToken": "mysecrettoken"
-}
