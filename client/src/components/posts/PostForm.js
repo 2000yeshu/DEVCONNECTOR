@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { addPost } from "../../actions/post";

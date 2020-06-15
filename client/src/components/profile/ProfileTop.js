@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 
 const ProfileTop = ({
   profile: {
@@ -47,7 +46,7 @@ const ProfileTop = ({
           </a>
         )}
         {social && social.instagram && (
-          <a thref={social.instagram} target="_blank" rel="noopener noreferrer">
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer">
             <i class="fab fa-instagram fa-2x"></i>
           </a>
         )}
