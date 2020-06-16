@@ -2,7 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const app = express();
 var bodyParser = require("body-parser");
-const path = require("");
+const path = require("path");
 
 //connect db
 connectDB();
