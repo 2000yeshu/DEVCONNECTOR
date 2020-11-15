@@ -11,12 +11,11 @@ import {
   CLEAR_PROFILE,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
+import Cookies from "js-cookie";
 
 //Load User
 export const loadUser = () => async (dispatch) => {
-  if (localStorage.token) {
-    setAuthToken(localStorage.token);
-  }
+  console.log(Cookies.get("DC_ST"), "session cookie");
 
   try {
     const res = await axios.get("/api/auth");
@@ -101,7 +100,14 @@ export const login = ({ email, password }) => async (dispatch) => {
 };
 
 //Logout
-export const logout = () => (dispatch) => {
-  dispatch({ type: CLEAR_PROFILE });
-  dispatch({ type: LOGOUT });
+export const logout = () => async (dispatch) => {
+  try {
+    await axios.post("/api/auth/logout");
+    dispatch({ type: CLEAR_PROFILE });
+    dispatch({ type: LOGOUT });
+  } catch (error) {
+    dispatch({
+      type: AUTH_ERROR,
+    });
+  }
 };
