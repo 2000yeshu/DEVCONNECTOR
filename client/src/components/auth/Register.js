@@ -1,11 +1,30 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
-import { register } from "../../actions/auth";
+import { register, sendEmail } from "../../actions/auth";
 import PropTypes from "prop-types";
+import store from "../../store.js";
+import { EMAIL_VERIFIED } from "../../actions/types.js";
 
-const Register = ({ setAlert, register, isAuthenticated }) => {
+const Register = ({
+  setAlert,
+  register,
+  isAuthenticated,
+  sendEmail,
+  emailLoading,
+  emailSent,
+  emailVerified,
+}) => {
+  useEffect(() => {
+    var es = new EventSource("http://localhost:7000/api/verify/stream");
+    es.addEventListener("email verified", function (event) {
+      console.log(event, "event");
+      store.dispatch({
+        type: EMAIL_VERIFIED,
+      });
+    });
+  }, []);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -58,6 +77,21 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             Gravatar email
           </small>
         </div>
+        <button
+          type="button"
+          class="btn btn-light"
+          onClick={() => {
+            console.log("button clicked", email);
+            sendEmail({ email: email });
+          }}
+        >
+          Verify E-mail
+        </button>
+        <div>
+          {emailLoading && <h1>Loading gif...</h1>}
+          {emailVerified && <h1>Email verified.</h1>}
+        </div>
+
         <div className="form-group">
           <input
             type="password"
@@ -89,13 +123,21 @@ Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
+  sendEmail: PropTypes.func.isRequired,
+  emailLoading: PropTypes.bool.isRequired,
+  emailSent: PropTypes.bool.isRequired,
+  emailVerified: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  emailLoading: state.auth.emailLoading,
+  emailSent: state.auth.emailSent,
+  emailVerified: state.auth.emailVerified,
 });
 
 export default connect(mapStateToProps, {
   setAlert,
   register,
+  sendEmail,
 })(Register);

@@ -1,5 +1,15 @@
 {
   "mongoURI": "mongodb+srv://yakul123:yakul123@devconnector-zhope.mongodb.net/test?retryWrites=true&w=majority",
   "jwtToken": "mysecrettoken",
-  "sessionExpiry": 600000
+  "sessionExpiry": 600000,
+  "firebaseConfig": {
+    "apiKey": "AIzaSyAZpttmSEj6KdUJ9pUA_15c3juFSPKo10M",
+    "authDomain": "devconnector-50474.firebaseapp.com",
+    "databaseURL": "https://devconnector-50474.firebaseio.com",
+    "projectId": "devconnector-50474",
+    "storageBucket": "devconnector-50474.appspot.com",
+    "messagingSenderId": "1041929589404",
+    "appId": "1:1041929589404:web:15f39754353be73d5a5359",
+    "measurementId": "G-8ZBKNCWKVW"
+  }
 }

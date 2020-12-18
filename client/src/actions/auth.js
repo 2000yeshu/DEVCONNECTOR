@@ -9,9 +9,17 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_PROFILE,
+  SEND_EMAIL,
+  EMAIL_SENT,
+  MAIL_SEND_ERROR,
+  VERIFY_EMAIL,
+  EMAIL_VERIFIED,
+  VERIFY_EMAIL_ERROR,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 import Cookies from "js-cookie";
+
+import Config from "../config.js";
 
 //Load User
 export const loadUser = () => async (dispatch) => {
@@ -95,6 +103,74 @@ export const login = ({ email, password }) => async (dispatch) => {
 
     dispatch({
       type: LOGIN_FAIL,
+    });
+  }
+};
+
+//send email
+export const sendEmail = ({ email }) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SEND_EMAIL,
+    });
+    const body = JSON.stringify({ email });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.post("/api/verify/sendEmail", body, config);
+    localStorage.setItem(Config.EmailLocalStorageKey, res.data);
+    dispatch({
+      type: EMAIL_SENT,
+    });
+    dispatch(setAlert(Config.MailSendSuccess, "success"));
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => {
+        dispatch(setAlert(error.msg, "danger"));
+      });
+    }
+    dispatch({
+      type: MAIL_SEND_ERROR,
+    });
+  }
+};
+
+//verifyEmail
+export const verifyEmail = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: VERIFY_EMAIL,
+    });
+    console.log("verify email action");
+    const body = JSON.stringify({
+      email: localStorage.getItem(Config.EmailLocalStorageKey),
+    });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log("verify email action");
+    const res = await axios.post("/api/verify", body, config);
+    console.log(res.data);
+    dispatch({
+      type: EMAIL_VERIFIED,
+    });
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => {
+        dispatch(setAlert(error.msg, "danger"));
+      });
+    }
+    dispatch({
+      type: VERIFY_EMAIL_ERROR,
     });
   }
 };

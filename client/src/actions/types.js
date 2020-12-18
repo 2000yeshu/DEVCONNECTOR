@@ -29,3 +29,11 @@ export const DELETE_POST = "DELETE_POST";
 
 export const ADD_COMMENT = "ADD_COMMENT";
 export const REMOVE_COMMENT = "REMOVE_COMMENT";
+
+export const SEND_EMAIL = "SEND_EMAIL";
+export const EMAIL_SENT = "EMAIL_SENT";
+export const MAIL_SEND_ERROR = "MAIL_SEND_ERROR";
+
+export const VERIFY_EMAIL = "VERIFY_EMAIL";
+export const EMAIL_VERIFIED = "EMAIL_VERIFIED";
+export const VERIFY_EMAIL_ERROR = "VERIFY_EMAIL_ERROR";

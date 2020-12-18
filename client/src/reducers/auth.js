@@ -7,6 +7,12 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   ACCOUNT_DELETED,
+  SEND_EMAIL,
+  EMAIL_SENT,
+  MAIL_SEND_ERROR,
+  VERIFY_EMAIL,
+  EMAIL_VERIFIED,
+  VERIFY_EMAIL_ERROR,
 } from "../actions/types";
 import Cookies from "js-cookie";
 
@@ -15,6 +21,10 @@ const initialState = {
   isAuthenticated: null,
   loading: true,
   user: null,
+  emailLoading: false,
+  emailSent: false,
+  emailVerifying: false,
+  emailVerified: false,
 };
 
 export default function (state = initialState, action) {
@@ -49,6 +59,23 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
         loading: false,
       };
+    case SEND_EMAIL:
+      return {
+        ...state,
+        emailLoading: true,
+      };
+
+    case EMAIL_SENT:
+      return { ...state, emailLoading: false, emailSent: true };
+    case MAIL_SEND_ERROR:
+      return { ...state, emailLoading: false, emailSent: false };
+
+    case VERIFY_EMAIL:
+      return { ...state, emailVerifying: true };
+    case EMAIL_VERIFIED:
+      return { ...state, emailVerifying: false, emailVerified: true };
+    case VERIFY_EMAIL_ERROR:
+      return { ...state, emailVerifying: false, emailVerified: false };
 
     default:
       return state;

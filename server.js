@@ -1,19 +1,26 @@
+const firebase = require("firebase");
 const express = require("express");
 const connectDB = require("./config/db");
 const app = express();
 var bodyParser = require("body-parser");
 const path = require("path");
+const config = require("config");
+const cors = require("cors");
 
+firebase.initializeApp(config.get("firebaseConfig"));
+//firebase.analytics();
+firebase.auth();
 //connect db
 connectDB();
 
 app.use(bodyParser.json());
-
+app.use(cors());
 //routes
 app.use("/api/users", require("./routes/api/user"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/posts", require("./routes/api/posts"));
 app.use("/api/profile", require("./routes/api/profile"));
+app.use("/api/verify", require("./routes/api/verification"));
 
 //Serve static assests in production
 if (process.env.NODE_ENV === "production") {
