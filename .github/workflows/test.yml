@@ -1,0 +1,8 @@
+name: learn-github-actions
+on: [push, pull_request]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Javascript Hello Action
+        uses: adeloyedeji/github-actions-hello@v1.0
